@@ -1,8 +1,4 @@
 #include <QApplication>
-#include <QLabel>
-#include <QFont>
-#include <QWidget>
-#include <QPushButton>
 
 #include "mafenetre.h"
 #include "medecin.h"
