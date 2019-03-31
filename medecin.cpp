@@ -1,12 +1,9 @@
-#include "medecin.h"
-
 #include <iterator>
 #include <iostream>
-#include <map>
 
-using namespace std;
+#include "medecin.h"
 
-void Medecin::predire(CMatString learnTable, CVString criteres, CVString valeurs) const {
+map< string, double > Medecin::predire(CMatString learnTable, CVString criteres, CVString valeurs) const {
 
     // Association des maladies à leur nombre d'occurence
     map<string, unsigned> maladies;
@@ -55,27 +52,7 @@ void Medecin::predire(CMatString learnTable, CVString criteres, CVString valeurs
         }
     }
 
-    for(unsigned i = 0; i < symptomes.size(); i++) {
-        // Create a map iterator and point to beginning of map
-        map< pair<string,string >, unsigned>::iterator it1 = symptomes[i].begin();
-
-        // Iterate over the map using Iterator till end.
-        while (it1 != symptomes[i].end())
-        {
-            // Accessing KEY from element pointed by it.
-            pair<string,string > word = it1->first;
-
-            // Accessing VALUE from element pointed by it.
-            double count = it1->second;
-
-            cout << word.first << "->" << word.second << " :: " << count << endl;
-
-            // Increment the Iterator to point to next entry
-            it1++;
-        }
-    }
-
-
+    // Association maladie -> score
     map< string, double > scores;
 
     map< string, unsigned>::iterator it = maladies.begin();
@@ -85,29 +62,35 @@ void Medecin::predire(CMatString learnTable, CVString criteres, CVString valeurs
 
         scores[label] += double(nbOccu) / double(learnTable.size());
         for(unsigned i = 0; i < symptomes.size(); i++) {
-            pair<string, string> assos = make_pair(valeurs[i], label);
-            cout << (symptomes[i][assos] / nbOccu) << endl;
-            scores[label] *= (double(symptomes[i][assos]) / double(nbOccu));
+            // Si champ non renseigné, conf = 1
+            if(valeurs[i] == "NULL")
+                scores[label] += double(1);
+            else {
+                pair<string, string> assos = make_pair(valeurs[i], label);
+                scores[label] *= (double(symptomes[i][assos]) / double(nbOccu));
+            }
         }
 
         it++;
     }
 
-    // Create a map iterator and point to beginning of map
-    map< string, double >::iterator it2 = scores.begin();
+    /* ### Affichage des scores en console pour debug ### */
+    cout << "--- Maladie pour les symptomes ";
+    for(string val: valeurs)
+        cout << val << ";";
+    cout << "---" << endl;
 
-    // Iterate over the map using Iterator till end.
+    map< string, double >::iterator it2 = scores.begin();
     while (it2 != scores.end())
     {
-        // Accessing KEY from element pointed by it.
         string word = it2->first;
-
-        // Accessing VALUE from element pointed by it.
         double count = it2->second;
 
-        cout << word << " :: " << count << endl;
+        cout << word << " = " << count << endl;
 
-        // Increment the Iterator to point to next entry
         it2++;
     }
+    /* ################################################### */
+
+    return scores;
 }

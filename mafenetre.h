@@ -10,40 +10,51 @@
 #include <QLineEdit>
 #include <QTableWidget>
 
-#include "charger_csv.h"
 #include "medecin.h"
+
+typedef vector<string> CVString;
+typedef vector <vector<string>> CMatString;
+typedef pair<unsigned, unsigned> fileSize;
 
 class MaFenetre : public QMainWindow {
     Q_OBJECT // Macro OBLIGATOIRE
 
     public slots :
-        void displayResults();
+        void displayResult();
 
     public :
         MaFenetre(Medecin medecin, QWidget *parent = nullptr);
-        CMatString getMat();
-        CVString getVet();
-        CVString getValues();
 
     private :
+        // Medecin associé à la fenetre
         Medecin m_medecin;
-        QLabel *m_title;
-        QLabel *lastNameLabel;
-        QLineEdit *m_lastName;
-        QLabel *firstNameLabel;
-        QLineEdit *m_firstName;
-        QPushButton *m_bou;
-        QComboBox *m_com;
-        QLabel *m_tra;
-        QString couleur;
+
+        // Données à traiter
         CVString m_vet;
         CMatString m_mat;
-        QLabel *comboBoxesLabel;
-        vector <QComboBox*> combo_boxes;
-        vector <QLabel*> labels;
-        QTableWidget *m_table;
 
+        // Elements graphiques
+        QLabel*             m_title;
+
+        QLabel*             lastNameLabel;
+        QLineEdit*          m_lastName;
+
+        QLabel*             firstNameLabel;
+        QLineEdit*          m_firstName;
+
+        QPushButton*        m_bou;
+
+        QLabel*             m_result;
+
+        QLabel*             m_select_Label;
+        vector <QComboBox*> m_combo_boxes;
+        vector <QLabel*>    m_combo_boxes_labels;
+
+        QTableWidget*       m_table;
+
+        // Methodes
         CMatString getColumns(const CMatString &mat);
+        CVString   getComboBoxValues();
 };
 
 #endif // MAFENETRE_H

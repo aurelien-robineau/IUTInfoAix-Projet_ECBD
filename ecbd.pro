@@ -10,6 +10,3 @@ HEADERS += \
     mafenetre.h \
     charger_csv.h \
     medecin.h
-
-DISTFILES += \
-    data.csv
